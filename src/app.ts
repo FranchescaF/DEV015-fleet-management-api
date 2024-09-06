@@ -16,8 +16,14 @@ app.listen(PORT, (): void => {
 });
 
 app.get('/taxis', async (req: Request, res: Response) => {
-    const taxis = await prisma.taxis.findMany({
-        where: {plate: {contains: 'J'}}
-      })
-    res.json(taxis)
+    try {
+        const taxis = await prisma.taxis.findMany({
+            where: { plate: { contains: 'J' } },
+            take: 10  // Limitar los resultados a 10
+        });
+        res.json(taxis);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los taxis.' });
+    }
 });
