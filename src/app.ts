@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client'
 import taxisRoutes from './routes/taxisRoutes'
+import trajectoriesRoutes from './routes/trajectoriesRoutes'; // Añadir las rutas de trayectorias
 
 
 const prisma = new PrismaClient()
@@ -14,4 +15,5 @@ app.listen(PORT, (): void => {
 });
 
 app.use(taxisRoutes);
+app.use(trajectoriesRoutes);  // Usar las rutas de trayectorias
 export default app;
