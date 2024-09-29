@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const taxisRoutes_1 = __importDefault(require("./routes/taxisRoutes"));
+const trajectoriesRoutes_1 = __importDefault(require("./routes/trajectoriesRoutes")); // Añadir las rutas de trayectorias
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 const PORT = 3001;
@@ -13,3 +14,5 @@ app.listen(PORT, () => {
     console.log('El servidor esta abierto en el puerto:', PORT);
 });
 app.use(taxisRoutes_1.default);
+app.use(trajectoriesRoutes_1.default); // Usar las rutas de trayectorias
+exports.default = app;

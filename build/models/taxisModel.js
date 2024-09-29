@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTaxis = void 0;
-const client_1 = __importDefault(require("../client"));
+const client_1 = __importDefault(require("../client")); //llamamos a base de datos
 const getTaxis = (_a) => __awaiter(void 0, [_a], void 0, function* ({ plate, page, limit }) {
     // Validación de los parámetros page y limit
     const pageNumber = Math.max(page, 1); // Asegura que la página sea al menos 1

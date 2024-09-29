@@ -4,6 +4,6 @@ import { trajectoryController } from "../controllers/trajectoriesController";
 const router = Router();
 
 // Ruta para obtener la trayectoria por taxiId y fecha
-router.get('/trajectory', trajectoryController);
+router.get('/trajectories', trajectoryController);
 
 export default router;
