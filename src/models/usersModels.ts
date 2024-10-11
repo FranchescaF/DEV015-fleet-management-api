@@ -1,69 +1,55 @@
 //las consultas con la base de datos, todo lo que esta ne la base de datos
 import prisma from "../client";//llamamos a base de datos
 
-// Crear un nuevo usuario
-export const createUser = async (req: Request, res: Response): Promise<void> => {
-   
-      const { name, email, password } = req.body;
-      const user = await prisma.users.create({
-        data: { name, email, password },
-      });
-  };
-  
-  // Leer todos los usuarios
-  export const getUsers = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const page = parseInt(req.query.page as string, 10) || 1;
-      const limit = parseInt(req.query.limit as string, 10) || 10;
-      const skip = (page - 1) * limit;
-  
-      const users = await prisma.users.findMany({
-        skip: skip,
-        take: limit,
-      });
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ error: 'Error obteniendo los usuarios' });
+// Crear un nuevo usuario--POST
+export const createUser = (name:string, email:string, password:string) => {
+   return prisma.users.create({
+    data:{
+      name,
+      email,
+      password
     }
-  };
+   })
+};
   
-  // Leer un usuario por ID
-  export const getUserById = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const user = await prisma.users.findUnique({ where: { id: Number(id) } });
-      if (user) {
-        res.status(200).json(user);
-      } else {
-        res.status(404).json({ error: 'Usuario no encontrado' });
+// Leer todos los usuarios--GET
+export const getUsers = async (page: number, limit:number) => {
+  return await prisma.users.findMany({
+    skip: (page-1)*limit,
+    take: limit
+  })
+};
+  
+// Actualizar un usuario--PATCH
+export const updateUser = (userId: number | null, userEmail: string | null, userName: string) => {
+  let searchParams: {id?:number, email?:string} = {};
+  if(userId){
+    searchParams.id = userId;
+  } else if (userEmail){
+    searchParams.email = userEmail;
+  } else {
+    throw new Error ('id o email invalidos')
+  }
+    return prisma.users.update({
+      where: searchParams as {id:number} | {email: string},
+      data: {
+        name: userName
       }
-    } catch (error) {
-      res.status(500).json({ error: 'Error obteniendo el usuario' });
-    }
-  };
+    })
+};
   
-  // Actualizar un usuario
-  export const updateUser = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      const { name, email, password } = req.body;
-      const user = await prisma.users.update({
-        where: { id: Number(id) },
-        data: { name, email, password },
-      });
-      res.status(200).json(user);
-    } catch (error) {
-      res.status(500).json({ error: 'Error actualizando el usuario' });
+  // Eliminar un usuario --DELETE 
+  export const deleteUser = (userId: number | null, userEmail: string | null) => {
+    let searchParams: { id?: number, email?: string} = {};
+    if(userId){
+      searchParams.id = userId;
+    } else if (userEmail) {
+      searchParams.email = userEmail;
+    } else {
+      throw new Error('id o email invalidos')
     }
-  };
-  
-  // Eliminar un usuario
-  export const deleteUser = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { id } = req.params;
-      await prisma.users.delete({ where: { id: Number(id) } });
-      res.status(200).json({ message: 'Usuario eliminado' });
-    } catch (error) {
-      res.status(500).json({ error: 'Error eliminando el usuario' });
-    }
+
+    return prisma.users.delete({
+      where: searchParams as {id: number} | {email:string},
+    })
   };
